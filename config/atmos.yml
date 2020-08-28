@@ -1,0 +1,64 @@
+# The atmos configuration system merges together all the yml files into one
+# giant hash, starting with this atmos.yml, then adding in all the files
+# matching the patterns in atmos.config_sources
+#
+# Hashes and arrays are merged in an additive fashion, and scalars are replaced
+# based on the merge order (last wins).  e.g.
+#   "foo: {bar: 1}, hum: [1]" + "foo: {baz: 2}, hum: [2]" => "foo: {bar: 1, baz: 2}, , hum: [1, 2]"
+# You can force an override (vs merge) of a hash or array by prefixing the key
+# with a caret (^)
+#   "foo: {bar: 1}" + "^foo: {baz: 2}" => "foo: {baz: 2}"
+#
+# Providers and environment overrides get merged in on top of the hash based on
+# the selected provider (aws) and environment (ops/dev/prod/etc).
+# The providers and environments key/hash are excluded from the final merged
+# configuration hash
+#
+# The merged configuration hash is provided to terraform at execution time via a
+# generated tfvars.json  To access those variables you still need to declare the
+# variables you use with a terraform variable declaration in a tf file
+#
+
+# The short name of your organization
+#
+org: ctdemo
+
+# The email address for receiving ops related alert emails
+#
+ops_email: demo@cloudtruth.com
+
+# The global name prefix for disambiguating resource names that have a global
+# scope (e.g. s3 bucket names)
+#
+global_name_prefix: "#{org}-#{atmos_env}-"
+local_name_prefix:  "#{org}-#{atmos_env}-"
+org_prefix: '#{org}'
+
+# Environment specific overrides.  When adding new environments place them
+# after the existing ones so that you don't end up with permission issues when
+# bootstrapping the new account.  You can also add overrides for each
+# environment in their corresponding yml file in config/atmos/environments/<env_name>.yml
+#
+environments:
+  ops:
+    account_id: '030602056254'
+  dev:
+    account_id: '030602056254'
+  production:
+    account_id: '030602056254'
+
+# A convenience for allowing other config statements to easily test if we are
+# running in a development environment, for example:
+# {is_dev ? 'dev val' : 'prod val'}
+#
+is_dev: "#{ !! /dev|test|staging/.match(atmos_env) }"
+
+# Configuration required in this file for finding other atmos config.  See
+# config/atmos/runtime.yml for atmos runtime configuration settings
+atmos:
+  # A list of glob patterns for finding atmos yml files
+  # Patterns can be absolute (beginning with /), but if not are applied relative
+  # to the directory containing atmos.yml
+  #
+  config_sources:
+  - atmos/*.y{,a}ml

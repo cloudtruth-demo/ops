@@ -1,0 +1,134 @@
+# Configuration for controlling the behavior of the atmos runtime
+atmos:
+
+  # Configure the location of a user config file.  This is where secrets are
+  # stored, e.g. OTP secrets
+  #
+  user_config_file: ~/.atmos.yml
+
+  # Sources for atmos templates
+  # To circumvent the version lock and get the latest git master recipes, use the git
+  # location, e.g.:
+  # location: https://github.com/simplygenius/atmos-recipes.git
+  #
+  template_sources:
+  - name: atmos-recipes
+    location: https://github.com/simplygenius/atmos-recipes.git
+
+  # The list of plugins to load when running atmos
+  #
+  # The core atmos plugin is named "simplygenius-atmos-plugins" and is enabled
+  # by default below.  Remove/comment to disable it completely, or disable parts
+  # of it by editing its config.  You can also add to the list for custom
+  # plugins, and can have plugins inline in your repo by adding a relative path
+  # to load_path
+  #
+  plugins:
+  - name: simplygenius-atmos-plugins
+    disable_prompt_notify: false
+    disable_lock_detection: false
+    disable_plan_summary: false
+    disable_json_diff: true
+
+  # Allows one to add a custom ruby load path list for extending atmos without
+  # having to publish a gem.  This can be a relative or shell (~) path as it
+  # gets expanded at runtime
+  load_path:
+
+  # Forces one to use the version of atmos that is given.  This version
+  # specifier can be 'latest' or in the form of a gem version dependency
+  # specifier, e.g. '~> 0.11.10'
+  version_requirement: latest
+
+  # Configure the mechanism that allows terraform to callback into atmos
+  ipc:
+    # Disables all IPC callbacks into atmos from terraform
+    disable: false
+    # Configures the notify IP callback
+    notify:
+      # Disable notify callbacks
+      disable: false
+
+  # Configure the template generator
+  generate:
+    # The file storing the record of each generated template
+    state_file: .atmos-templates.yml
+
+  # Configure the UI components
+  ui:
+    # Configures UI notifications
+    notify:
+      # Disable notifications
+      disable: false
+      # Force notifications to never be modal
+      disable_modal: false
+      # Set a custom command for notifications, embedded {{title|message|modal}}
+      # will be replaced with the value passed from terraform
+      command:
+      # Force notifications inline in atmos' stdout output rather than launching
+      # a GUI notification
+      force_inline: false
+
+  # Configure the container components accessible with 'atmos container ....'
+  container:
+    # Configuration for the console subcommand
+    # For this to work, your service container needs to have a recent (>= 2.4)
+    # tmate installed. For example in a debian container:
+    #
+    #      # Install locales package for tmate
+    #      RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -q -y locales
+    #
+    #      # To set utf-8 locale for tmate
+    #      RUN sed -i -e 's/# \(en_US\.UTF-8 .*\)/\1/' /etc/locale.gen && \
+    #      dpkg-reconfigure --frontend=noninteractive locales && \
+    #      update-locale LANG=en_US.UTF-8
+    #      ENV LANG en_US.UTF-8
+    #
+    #      # Install tmate
+    #      RUN curl -Lo /tmp/tmate.tar.xz https://github.com/tmate-io/tmate/releases/download/2.4.0/tmate-2.4.0-static-linux-amd64.tar.xz && \
+    #      cd /tmp && \
+    #      tar xf /tmp/tmate.tar.xz && \
+    #      mv tmate-2.4.0-static-linux-amd64/tmate /usr/bin/tmate && \
+    #      rm -rf /tmp/tmate*
+    #
+    #      # tmate needs ssh keys
+    #      RUN ssh-keygen -f ~/.ssh/id_rsa -N '' -t rsa
+    #
+    console:
+      # The remote command to run when initiating a console (exits on disconnect)
+      remote_command:
+        - bash
+        - -c
+        - echo "set tmate-foreground-restart 0" > ~/.tmate.conf && SHELL=/bin/bash tmate -F
+      # The remote command to run when initiating a console (persists on disconnect)
+      remote_persist_command:
+        - bash
+        - -c
+        - SHELL=/bin/bash tmate -F
+      # The regexp to match against remote command output to extract any tokens
+      # needed for the client to connect.  The regexp named groups (?<...>) get
+      # substituted within the client command (<...>)
+      remote_log_pattern: "^ssh session: ssh (?<token>\\w+)@nyc1.tmate.io$"
+      # The local command to run when initiating a console
+      local_command:
+        - ssh
+        - <token>@nyc1.tmate.io
+
+  # Configure terraform execution details
+  terraform:
+    # Disable module fetch from convenience plan/apply commands
+    disable_auto_modules: false
+    # By default (value=false), `atmos init` will update the terraform user
+    # plugin directory (~/.terraform.d/plugins) with the plugins for the current
+    # env/group so that they can be reused across all env/group combinations.
+    # Otherwise, disabling this functionality (value=true) means that each
+    # env/group combination will be independent and download all plugins for
+    # itself only
+    disable_shared_plugins: false
+    # Customize what gets linked into the working directory that terraform gets
+    # executed in
+    working_dir_links: ['modules', 'templates', 'bin', '.terraform-version']
+    # Set true if running terraform version < 0.11.x
+    compat11: false
+    # Automatically run "init" if needed when using "atmos plan|apply"
+    auto_init: true

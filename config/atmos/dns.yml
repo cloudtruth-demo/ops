@@ -1,0 +1,8 @@
+# Variables for the aws/dns template
+#
+
+# The primary domain lives in production environment
+domain: "#{is_dev ? atmos_env + '.' : ''}demo.cloudtruth.dev"
+
+# Seamless cleanup in dev environments
+force_destroy_zones: "#{is_dev}"

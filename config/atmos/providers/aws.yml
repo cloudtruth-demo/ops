@@ -1,0 +1,33 @@
+# Provider specific overrides for the aws provider
+#
+# You can add overrides for other providers by creating a <provider>.yml file in
+# this directory where <provider> is the provider name.
+#
+# Overrides in this file should NOT be scoped under a "providers ->
+# <provider>" hash like they need to be in atmos.yml
+#
+region: us-east-1
+auth:
+  session_duration: 3600
+  assume_role_name: "demo-admin"
+  bootstrap_assume_role_name: "demo-admin"
+backend:
+  type: s3
+  # global_name_prefix contains atmos_env, so results in a different bucket and dynamodb table per env
+  bucket: "#{global_name_prefix}terraform-state"
+  # Use a different state file per working group, e.g. bootstrap vs default
+  key: "#{atmos_working_group}-terraform.tfstate"
+  region: "#{_root_.region}"
+  encrypt: true
+  dynamodb_table: "#{global_name_prefix}atmos-terraform-lock"
+secret:
+  # s3 or ssm, or add your own fully qualified class name
+  type: ssm
+  # The bucket to use for s3 secret store, not used for ssm
+  bucket: "#{global_name_prefix}secrets"
+  # The prefix path to store keys under
+  prefix: "#{local_name_prefix}"
+  # The region to host the secrets bucket in
+  region: "#{_root_.region}"
+  # Store values encrypted (or not)
+  encrypt: true
