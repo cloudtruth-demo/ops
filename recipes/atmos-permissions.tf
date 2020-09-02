@@ -35,3 +35,12 @@ EOF
 
   }
 }
+
+resource "aws_iam_user_policy" "allow-ecs-deploy" {
+  count = var.atmos_env == local.ops_env ? 1 : 0
+
+  name = "${var.local_name_prefix}allow-ecs-deploy"
+  user = aws_iam_user.deployer[0].name
+
+  policy = file("../templates/policy-deployer-permissions.json")
+}
