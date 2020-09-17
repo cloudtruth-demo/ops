@@ -1,0 +1,64 @@
+{
+  "org": "ctdemo",
+  "ops_email": "demo@cloudtruth.com",
+  "is_dev": false,
+  "az_count": 2,
+  "vpc_cidr": "10.10.0.0/16",
+  "vpc_enable_nat": 1,
+  "vpc_enable_redundant_nat": 0,
+  "provider": "aws",
+  "logs_bucket": "ctdemo-production-logs",
+  "force_destroy_buckets": false,
+  "skip_final_snapshot": false,
+  "service_sizing_default": {
+    "min_capacity": 1,
+    "max_capacity": 1,
+    "cpu": 256,
+    "memory": 512
+  },
+  "service_sizing": {
+    "bigboy": {
+      "min_capacity": 1,
+      "max_capacity": 1,
+      "cpu": 512,
+      "memory": 1024
+    }
+  },
+  "db_sizing": {
+    "some-rds": {
+      "count": 0,
+      "type": "db.t2.micro"
+    }
+  },
+  "website_bucket": "ctdemo-production-app",
+  "domain": "demo.cloudtruth.dev",
+  "force_destroy_zones": false,
+  "region": "us-east-1",
+  "locations": [
+    {
+      "name": "Boston",
+      "state": "MA",
+      "region": "us-east-1"
+    },
+    {
+      "name": "Seattle",
+      "state": "WA",
+      "region": "us-west-1"
+    },
+    {
+      "name": "Dayton",
+      "state": "OH",
+      "region": "us-east-2"
+    },
+    {
+      "name": "Weymouth",
+      "state": "MA",
+      "region": "us-east-1"
+    },
+    {
+      "name": "Truro",
+      "state": "MA",
+      "region": "us-east-1"
+    }
+  ]
+}
