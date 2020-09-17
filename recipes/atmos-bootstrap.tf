@@ -4,7 +4,7 @@
 
 data "template_file" "policy-backend-bucket" {
   vars = {
-    bucket              = var.backend["bucket"]
+    bucket = var.backend["bucket"]
   }
 
   template = file("../templates/policy-backend-bucket.tmpl.json")

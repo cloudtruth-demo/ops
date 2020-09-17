@@ -15,6 +15,14 @@ resource "aws_iam_access_key" "deployer" {
   user = aws_iam_user.deployer[0].name
 }
 
+output "deployer" {
+  sensitive = true
+  value = {
+    access_key = aws_iam_access_key.deployer.*.id
+    access_secret = aws_iam_access_key.deployer.*.secret
+  }
+}
+
 variable "display_deployer" {
   description = "Set to 1 to display the aws keys for the deployer user, e.g. TF_VAR_display_deployer=1 atmos -e ops plan"
   default     = 0
