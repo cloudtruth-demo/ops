@@ -3,9 +3,13 @@ variable "cloudtruth_account_id" {
   default = "811566399652"
 }
 
+variable "cloudtruth_role_name" {
+  default = "cloudtruth"
+}
+
 resource "aws_iam_role" "cloudtruth" {
   description = "The role that cloudtruth will assume in order to access your AWS account"
-  name = "cloudtruth"
+  name = var.cloudtruth_role_name
 
   assume_role_policy = <<EOF
 {
