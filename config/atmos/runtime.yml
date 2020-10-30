@@ -124,7 +124,7 @@ atmos:
     # Otherwise, disabling this functionality (value=true) means that each
     # env/group combination will be independent and download all plugins for
     # itself only
-    disable_shared_plugins: false
+    disable_shared_plugins: true
     # Customize what gets linked into the working directory that terraform gets
     # executed in
     working_dir_links: ['modules', 'templates', 'bin', '.terraform-version']

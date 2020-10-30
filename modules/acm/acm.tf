@@ -42,16 +42,17 @@ locals {
   names_without_wildcard = compact(
     split(",", replace(join(",", local.all_names), local.wildcard, "")),
   )
+  validated_domains = [for x in aws_acm_certificate.primary.domain_validation_options: x if contains(local.names_without_wildcard, x["domain_name"])]
 }
 
 resource "aws_route53_record" "cert_validation" {
-  count = length(local.names_without_wildcard)
+  count = length(local.validated_domains)
 
-  name    = aws_acm_certificate.primary.domain_validation_options[count.index]["resource_record_name"]
-  type    = aws_acm_certificate.primary.domain_validation_options[count.index]["resource_record_type"]
+  name    = local.validated_domains[count.index]["resource_record_name"]
+  type    = local.validated_domains[count.index]["resource_record_type"]
   zone_id = var.zone_id
 
-  records = [aws_acm_certificate.primary.domain_validation_options[count.index]["resource_record_value"]]
+  records = [local.validated_domains[count.index]["resource_record_value"]]
   ttl     = 60
 }
 
