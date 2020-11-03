@@ -1,7 +1,3 @@
-variable "domain" {
-  description = "The primary domain name for your organization"
-}
-
 variable "force_destroy_zones" {
   description = <<-EOF
     Allows destruction of route53 zones that have contents.  Set to true for

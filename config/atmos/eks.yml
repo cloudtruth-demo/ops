@@ -1,0 +1,25 @@
+# TODO: annoying that tag keys could need interpolation to get eks cluster name,
+# so have to duplicate equivalent of local_name_prefix with an atmos hack
+#vpc_private_subnet_tags:
+#  "kubernetes.io/cluster/services": "shared"
+#  "kubernetes.io/role/internal-elb": 1
+#vpc_public_subnet_tags:
+#  "kubernetes.io/cluster/services": "shared"
+#  "kubernetes.io/role/elb": 1
+
+vpc_private_subnet_tags_interpolated:
+  - "kubernetes.io/cluster/#{local_name_prefix}services"
+  - "shared"
+  - "kubernetes.io/role/internal-elb"
+  - "1"
+vpc_public_subnet_tags_interpolated:
+  - "kubernetes.io/cluster/#{local_name_prefix}services"
+  - "shared"
+  - "kubernetes.io/role/elb"
+  - "1"
+vpc_set_private_tags: "#{Atmos.config['vpc_private_subnet_tags'] = Hash[*vpc_private_subnet_tags_interpolated]}"
+vpc_set_public_tags: "#{Atmos.config['vpc_public_subnet_tags'] = Hash[*vpc_public_subnet_tags_interpolated]}"
+
+vpc_private_subnet_tags:
+vpc_public_subnet_tags:
+

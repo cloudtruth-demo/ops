@@ -19,6 +19,10 @@ recipes:
   - service
   - cluster-services
   - service-demo1
+  - eks-bootstrap
+  eks:
+    - atmos-variables
+    - eks-support
 
 # Environment specific overrides for recipes.  You can also put these where you put other
 # overrides, but they are here as a convenience to keep recipe overrides close

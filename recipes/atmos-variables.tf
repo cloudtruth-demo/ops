@@ -97,6 +97,10 @@ EOF
   default = false
 }
 
+variable "domain" {
+  description = "The primary domain name for your organization"
+}
+
 locals {
   ops_env         = "ops"
   ops_account     = var.account_ids[local.ops_env]

@@ -68,3 +68,7 @@ module "vpc" {
   private_subnet_tags = var.vpc_private_subnet_tags
   public_subnet_tags  = var.vpc_public_subnet_tags
 }
+
+output "vpc_id" {
+  value = module.vpc.vpc_id
+}
