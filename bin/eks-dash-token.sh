@@ -39,7 +39,7 @@ cat <<-'EOF' | atmos -e ${env} auth_exec bash -se "${cluster}" "${admin_role}"
   set -m
   admin_secret=$(kubectl --context "${1}" -n kubernetes-dashboard get secret | grep "${2}" | awk '{print $1}')
   kubectl --context "${1}" -n kubernetes-dashboard describe secret $admin_secret
-  kubectl proxy &
+  kubectl --context "${1}" proxy &
   sleep 1
   open http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:https/proxy/#/login
   fg %%
