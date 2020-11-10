@@ -200,11 +200,11 @@ clusters:
 contexts:
 - context:
     cluster: ${aws_eks_cluster.main.name}
-    user: aws
+    user: aws-${aws_eks_cluster.main.name}
   name: ${aws_eks_cluster.main.name}
 current-context: ${aws_eks_cluster.main.name}
 users:
-- name: aws
+- name: aws-${aws_eks_cluster.main.name}
   user:
     exec:
       apiVersion: client.authentication.k8s.io/v1alpha1

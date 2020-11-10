@@ -19,16 +19,17 @@ module "eks-services" {
   profile_subnet_ids = module.vpc.private_subnet_ids
 }
 
-// If coredns pods didn't start cleanly after being patched:
-// atmos -e <env> auth_exec kubectl get pods -o wide --all-namespaces
-// you'll need to run:
-// atmos -e <env> auth_exec kubectl -n kube-system rollout restart deployment/coredns
+resource "null_resource" "setup_kube_config" {
+  depends_on = [module.eks-services]
 
-data "external" "setup_kube_config" {
-  program = [
-    "atmos", "tfutil", "jsonify",
-    "bash", "-c", "KUBECONFIG=<(cat $HOME/.kube/config):<(echo '${module.eks-services.kubecfg}') kubectl config view --flatten > $HOME/.kube/aws_config && mv -f $HOME/.kube/aws_config $HOME/.kube/config "
-  ]
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<EOF
+KUBECONFIG=<(echo '${module.eks-services.kubecfg}'):<(cat $HOME/.kube/config) \
+  kubectl config view --flatten > $HOME/.kube/aws_config \
+  && mv -f $HOME/.kube/aws_config $HOME/.kube/config
+EOF
+  }
 }
 
 data "template_file" "deployer_rbac" {
@@ -49,6 +50,8 @@ EOF
 }
 
 resource "null_resource" "deployer_rbac" {
+  depends_on = [module.eks-services]
+
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<EOF
