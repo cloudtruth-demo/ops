@@ -10,6 +10,12 @@ EOF
   value = data.template_file.kubeconfig.rendered
 }
 
+output "kubecfg_tf" {
+  description = "kubeconfig for use within terraform, e.g. for patching things as part of the initial bootstrap when we can't use the provider"
+
+  value = data.template_file.kubeconfig-tf.rendered
+}
+
 output "cluster_name" {
   description = "The cluster name"
   value       = aws_eks_cluster.main.name

@@ -202,6 +202,7 @@ contexts:
     cluster: ${aws_eks_cluster.main.name}
     user: aws
   name: ${aws_eks_cluster.main.name}
+current-context: ${aws_eks_cluster.main.name}
 users:
 - name: aws
   user:
