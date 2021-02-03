@@ -101,6 +101,10 @@ variable "domain" {
   description = "The primary domain name for your organization"
 }
 
+variable "cloudtruth_api_key" {
+  description = "The cloudtruth api key (secret in ~/.atmos.yml)"
+}
+
 locals {
   ops_env         = "ops"
   ops_account     = var.account_ids[local.ops_env]
@@ -120,6 +124,15 @@ terraform {
     }
     template = {
       source = "hashicorp/template"
+    }
+    helm = {
+      source = "hashicorp/helm"
+    }
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+    }
+    null = {
+      source = "hashicorp/null"
     }
   }
   required_version = ">= 0.13"

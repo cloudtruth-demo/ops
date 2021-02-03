@@ -170,3 +170,26 @@ resource "helm_release" "external-dns" {
   }
 
 }
+
+resource "helm_release" "kubetruth" {
+  repository = "https://packages.cloudtruth.com/charts/"
+  chart = "kubetruth"
+  name  = "kubetruth"
+  namespace = "default"
+
+  set {
+    name  = "appSettings.environment"
+    value = var.atmos_env
+  }
+
+  set {
+    name  = "appSettings.apiKey"
+    value = var.cloudtruth_api_key
+  }
+
+  set {
+    name  = "appSettings.keyPrefix"
+    value = "{service}"
+  }
+
+}
