@@ -38,7 +38,7 @@ atmos:
   # Forces one to use the version of atmos that is given.  This version
   # specifier can be 'latest' or in the form of a gem version dependency
   # specifier, e.g. '~> 0.11.10'
-  version_requirement: '~> 0.12.0'
+  version_requirement: 'latest'
 
   # Configure the mechanism that allows terraform to callback into atmos
   ipc:
