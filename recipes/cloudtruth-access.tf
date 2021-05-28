@@ -16,11 +16,12 @@ module "grant-cloudtruth-access" {
   ]
 
   ssm_resources = [
-    "arn:aws:ssm:${var.region}:${var.account_ids[var.atmos_env]}:parameter/sample*"
+    "arn:aws:ssm:*:${var.account_ids[var.atmos_env]}:parameter/_cloudtruth_test_*",
+    "arn:aws:ssm:*:${var.account_ids[var.atmos_env]}:parameter/sample*"
   ]
 
   secrets_resources = [
-    "arn:aws:secretsmanager:${var.region}:${var.account_ids[var.atmos_env]}:secret:sample*"
+    "arn:aws:secretsmanager:*:${var.account_ids[var.atmos_env]}:secret:_cloudtruth_test_*",
+    "arn:aws:secretsmanager:*:${var.account_ids[var.atmos_env]}:secret:sample*"
   ]
 }
-
