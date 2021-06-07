@@ -30,3 +30,8 @@ variable "db_sizing" {
     type  = string
   }))
 }
+
+variable "service_cloudtruth_api_key" {
+  description = "The api key used by services for live config"
+  // atmos -e <env> secret set <key> <value>
+}
