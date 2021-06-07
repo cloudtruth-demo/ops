@@ -142,7 +142,7 @@ resource "aws_lambda_function" "site-redirects" {
 
   role    = aws_iam_role.site-redirects-lambda.arn
   handler = "main.handler"
-  runtime = "nodejs10.x"
+  runtime = "nodejs14.x"
 }
 
 resource "aws_route53_record" "site" {

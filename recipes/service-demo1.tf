@@ -1,12 +1,28 @@
 locals {
-  demo1_env = {
+  demo1_env = { for k, v in {
     AWS_REGION = var.region
     SVC_ENV    = var.atmos_env
     SVC_NAME   = "$${name}"
     SVC_PORT   = "$${port}"
-  }
+  } : k => v if v != "" }
+
+  demo1_secrets_env = { for k, v in {
+    CLOUDTRUTH_API_KEY = "service_cloudtruth_api_key"
+  } : k => v if v != "" }
 
   demo1_svc_env = join(",\n", formatlist("{ \"name\" : \"%s\", \"value\" : \"%s\" }", keys(local.demo1_env), values(local.demo1_env)))
+  demo1_svc_secrets_env = join(",\n", formatlist("{ \"name\" : \"%s\", \"valueFrom\" : \"/${var.local_name_prefix}/%s\" }", keys(local.demo1_secrets_env), values(local.demo1_secrets_env)))
+}
+
+module "service-demo1-secret-access" {
+  source        = "../modules/secret-access"
+  secret_config = var.secret
+  name          = "${var.local_name_prefix}service-demo1"
+
+  // for ssm secrets (the framework does the lookup)
+  roles = [module.service-demo1.execution_role]
+
+  keys = values(local.demo1_secrets_env)
 }
 
 module "service-demo1-alb" {
@@ -23,6 +39,7 @@ module "service-demo1-alb" {
   subnet_ids    = module.vpc.public_subnet_ids
   vpc_id        = module.vpc.vpc_id
   logs_bucket   = aws_s3_bucket.logs.bucket
+  health_check_override = { path = "/health_check" }
 
   destination_port = module.service-demo1.port
 
@@ -75,6 +92,9 @@ module "service-demo1" {
         ],
         "environment" : [
             ${local.demo1_svc_env}
+        ],
+        "secrets": [
+            ${local.demo1_svc_secrets_env}
         ],
         "logConfiguration": {
             "logDriver": "awslogs",

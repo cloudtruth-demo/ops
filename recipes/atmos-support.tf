@@ -30,3 +30,20 @@ resource "aws_s3_bucket" "logs" {
     Source = "atmos"
   }
 }
+
+output "atmos_yml" {
+  sensitive = true
+  value     = <<-EOF
+org: "${var.org}"
+
+environments:
+${join("\n", formatlist("  %s:\n    account_id: \"%s\"\n", keys(var.account_ids), values(var.account_ids)))}
+
+providers:
+  aws:
+    region: "${var.region}"
+    auth:
+      # we don't use assume role for demo setup
+      bypass: true
+EOF
+}

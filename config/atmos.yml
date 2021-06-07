@@ -59,12 +59,6 @@ atmos:
   # A list of glob patterns for finding atmos yml files
   # Patterns can be absolute (beginning with /), but if not are applied relative
   # to the directory containing atmos.yml
-  #`
+  #
   config_sources:
   - atmos/*.y{,a}ml
-  # A list of remote atmos configuration yml files.
-  # Takes any URI supported by ruby's open-uri
-  #
-  # cloudtruth_config_tid needs to be set in ~/.atmos.yml
-  remote_config_sources:
-    - https://api.cloudtruth.com/t/#{cloudtruth_config_tid}/#{atmos_env}

@@ -46,3 +46,11 @@ resource "aws_iam_user_policy" "website-deploy-s3-cdn-access" {
 
   policy = data.template_file.policy-deploy-static-website.rendered
 }
+
+output "website" {
+  sensitive = true
+  value     = {
+    bucket_name = var.website_bucket
+    distribution_id = module.static-website-app.distribution_id
+  }
+}
