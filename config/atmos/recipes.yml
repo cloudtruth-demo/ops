@@ -12,17 +12,9 @@ recipes:
   default:
   - atmos-variables
   - atmos-permissions
-  - atmos-support
-  - vpc
-  - dns
-  - static-website
-  - service
-  - cluster-services
-  - service-demo1
-  - eks-bootstrap
-  eks:
-    - atmos-variables
-    - eks-support
+#  eks:
+#  - atmos-variables
+#  - eks-support
 
 # Environment specific overrides for recipes.  You can also put these where you put other
 # overrides, but they are here as a convenience to keep recipe overrides close
@@ -36,3 +28,15 @@ environments:
       - atmos-permissions
       - atmos-support
       - cloudtruth-access
+  production:
+    recipes:
+      default:
+        - atmos-support
+        - vpc
+        - dns
+        - static-website
+        - sample-data
+      #  - service
+      #  - cluster-services
+      #  - service-demo1
+      #  - eks-bootstrap
